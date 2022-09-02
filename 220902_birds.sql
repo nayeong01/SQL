@@ -80,16 +80,20 @@ WHERE food_id IN (SELECT food_id
                   WHERE food_name = 'Fish');
 
 SELECT b.bird_name,
-f.food_name
+f.food_name,
+n.nest_name
 FROM birds b
 INNER JOIN birds_food bf ON bf.bird_id = b.bird_id
 INNER JOIN food f ON f.food_id = bf.food_id
-WHERE b.bird_id IN (SELECT bf.bird_id
-                  FROM birds_food
-                  WHERE bf.food_id IN (SELECT f.food_id
-                                    FROM food
-                                    WHERE f.food_name = 'Fish'))
-AND b.nest_builder = 'B';
+INNER JOIN birds_nests bn ON bn.bird_id = b.bird_id
+INNER JOIN nests n ON n.nest_id = bn.nest_id
+ORDER BY b.bird_id;
+--WHERE b.bird_id IN (SELECT bf.bird_id
+ --                 FROM birds_food
+  --                WHERE bf.food_id IN (SELECT f.food_id
+   --                                 FROM food
+     --                               WHERE f.food_name = 'Fish'))
+--AND b.nest_builder = 'B';
 
 SELECT nest_id
 FROM birds_nests
