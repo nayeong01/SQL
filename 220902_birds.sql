@@ -1,5 +1,5 @@
 --1--
-SELECT  bird_id, bird_name
+SELECT  bird_id
 FROM birds
 WHERE bird_name = 'Great Blue Heron';
 
@@ -7,13 +7,15 @@ SELECT food_id
 FROM birds_food
 WHERE bird_id IN (SELECT bird_id FROM birds WHERE bird_name = 'Great Blue Heron');
 
-SELECT food_name
-FROM food
-WHERE food_id IN (SELECT food_id
+SELECT bird_name,f.food_name
+FROM birds b
+INNER JOIN birds_food bf ON b.bird_id = bf.bird_id
+INNER JOIN food f ON f.food_id = bf.food_id 
+WHERE f.food_id IN (SELECT bf.food_id
                   FROM birds_food
-                  WHERE bird_id IN (SELECT bird_id
+                  WHERE bf.bird_id IN (SELECT b.bird_id
                                     FROM birds
-                                    WHERE bird_name = 'Great Blue Heron'));
+                                    WHERE b.bird_name = 'Great Blue Heron'));
 
 --2--
 select food_id
@@ -103,13 +105,13 @@ WHERE bird_id IN (SELECT bird_id
                                     FROM food
                                     WHERE food_name = 'Fish'));
                                     
-SELECT nest_name
-FROM nests
-WHERE nest_id IN (SELECT nest_id
-              FROM birds_nests
-              WHERE bird_id IN (SELECT bird_id
-                                FROM birds_food
-                                WHERE food_id IN (SELECT food_id
-                                                  FROM food
-                                                  WHERE food_name = 'Fish')));
+SELECT b.bird_name,
+f.food_name,
+n.nest_name
+FROM birds b
+INNER JOIN birds_nests bn ON b.bird_id = bn.bird_id
+INNER JOIN nests n ON n.nest_id = bn.nest_id
+INNER JOIN birds_food bf ON b.bird_id = bf.bird_id
+INNER JOIN food f ON f.food_id = bf.food_id 
+WHERE f.food_name = 'Fish' AND n.nest_name = 'Platform Nest';
 
